@@ -1,0 +1,123 @@
+import re
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+class AclCommonFunctions:
+    @staticmethod
+    def configure_acl(device):
+        command_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="107" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>conf t ; ip access-list user-acl-ssh ; 10 deny ip 192.168.6.1/24 any ; 20 permit ip 192.168.2.1/24 any</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+            reply_command = device.nc.request(command_request)
+            logger.info("Configuration Reply: %s", reply_command)
+        except Exception as e:
+            logger.error(f"Failed to send configuration command: {e}")
+            raise RuntimeError(f"Failed to send configuration command: {e}")
+
+
+    @staticmethod
+    def verify_acl(device):
+        verification_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="108" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>show ip access-list user-acl-ssh</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+            verification_reply = device.nc.request(verification_request)
+            acl_output = str(verification_reply)
+            rule_deny = r"<mod:seqno>10</mod:seqno>\s*<mod:permitdeny>deny</mod:permitdeny>\s*<mod:ip>ip</mod:ip>\s*<mod:src_ip_prefix>192\.168\.6\.1/24</mod:src_ip_prefix>\s*<mod:dest_any>any</mod:dest_any>"
+            rule_permit = r"<mod:seqno>20</mod:seqno>\s*<mod:permitdeny>permit</mod:permitdeny>\s*<mod:ip>ip</mod:ip>\s*<mod:src_ip_prefix>192\.168\.2\.1/24</mod:src_ip_prefix>\s*<mod:dest_any>any</mod:dest_any>"
+
+            match_deny = re.search(rule_deny, acl_output)
+            match_permit = re.search(rule_permit, acl_output)
+ 
+            # Verify both rules
+            if match_deny and match_permit:
+                logger.info("Both ACL rules are verified successfully.")
+            else:
+                if not match_deny:
+                    logger.error(f"ACL deny rule matching '{rule_deny}' not found in the device configuration")
+                if not match_permit:
+                    logger.error(f"ACL permit rule matching '{rule_permit}' not found in the device configuration")
+                raise RuntimeError("One or more ACL rules not found in the device configuration")
+        except Exception as e:
+            logger.error(f"Failed to send verification command: {e}")
+            raise RuntimeError(f"Failed to send verification command: {e}")
+
+    @staticmethod
+    def disconnect_device(device):
+        device.nc.disconnect()
+        if not device.nc.connected:
+            logger.info("NETCONF disconnected: %s", device.nc.connected)
+        else:
+            logger.error("Failed to disconnect from device via NETCONF")
+            raise RuntimeError("Failed to disconnect from device via NETCONF")
+
+
+__________________________________________________________________________________________-
+
+
+from pyats.topology import loader
+from pyats import aetest
+from acl_lib import AclCommonFunctions
+import logging
+ 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+ 
+class CommonSetup(aetest.CommonSetup):
+    @aetest.subsection
+    def connect_to_device(self, testbed_name="testbed1.yaml"):
+        self.testbed = loader.load(testbed_name)
+
+        #extract device name from the testbed file
+        device_name = list(self.testbed.devices.keys())[0]
+        self.parent.parameters['device'] = self.testbed.devices[device_name]
+        device = self.parent.parameters['device']
+
+        #connect to the device using NETCONF
+        device.connect(alias='nc', via='netconf')
+        assert device.nc.connected, "NETCONF connection failed"
+        logger.info("NETCONF connected: %s", device.nc.connected)
+
+class ACLVerification(aetest.Testcase):
+    @aetest.setup
+    def configure_acl(self):
+        try:
+            device = self.parent.parameters['device']
+            AclCommonFunctions.configure_acl(device)
+        except Exception as e:
+            self.failed(f"Failed to configure ACL: {e}")
+ 
+    @aetest.test
+    def verify_acl(self):
+        try:
+            device = self.parent.parameters['device']
+            AclCommonFunctions.verify_acl(device)
+        except Exception as e:
+            self.failed(f"Failed to verify ACL: {e}")
+
+class CommonCleanup(aetest.CommonCleanup):
+    @aetest.subsection
+    def disconnect_from_device(self):
+        try:
+            device = self.parent.parameters['device']
+            if device.nc.connected:
+                device.nc.disconnect()
+                logger.info("NETCONF disconnected")
+        except Exception as e:
+            logger.error(f"Error disconnecting from device: {e}")
+
+if __name__ == "__main__":
+    aetest.main()
