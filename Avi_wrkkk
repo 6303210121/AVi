@@ -1,0 +1,242 @@
+from pyats import aetest
+from pyats.topology import loader
+import re
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class CommonSetup(aetest.CommonSetup):
+    @aetest.subsection
+    def connect_to_device(self, testbed_name="testbed.yaml"):
+        self.testbed = loader.load(testbed_name)
+        self.parent.parameters['device'] = self.testbed.devices['n9k1']
+        device = self.parent.parameters['device']
+        device.connect(alias='nc', via='netconf')
+        assert device.nc.connected, "NETCONF connection failed"
+        logger.info("NETCONF connected: %s", device.nc.connected)
+
+
+class ConfigureACL(aetest.Testcase):
+    @aetest.test
+    def configure_acl(self, device):
+        command_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="107" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>conf t ; ip access-list user-acl-ssh ; 10 deny ip 192.168.6.1/24 any ; 20 permit ip 192.168.2.1/24 any</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+           command_reply = device.nc.request(command_request)
+           logger.info("Configuration Reply:\n%s", command_reply)
+        except Exception as e:
+            self.failed(f"Failed to send configuration command: {e}")
+
+
+class AddInterfaceToACL(aetest.Testcase):
+    @aetest.test
+    def add_interface_to_acl(self, device):
+        interface_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="111" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>conf t ; interface Ethernet1/9 ; ip access-group user-acl-ssh in</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+           interface_reply = device.nc.request(interface_request)
+           logger.info("Interface Configuration Reply:\n%s", interface_reply)
+        except Exception as e:
+            self.failed(f"Failed to add interface to ACL: {e}")
+ 
+
+class VerifyACL(aetest.Testcase):
+    @aetest.test
+    def verify_acl(self, device):
+        acl_verification_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="108" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>show ip access-list user-acl-ssh</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+
+        interface_verification_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="112" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>show running-config interface Ethernet1/9</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+            # Verification of ACL configuration
+            acl_verify_reply = device.nc.request(acl_verification_request)
+            logger.info("ACL Verification Reply:\n%s", acl_verify_reply)
+            acl_pattern = re.compile(r" [A-Z]*\W+[a-z]*\W+[a-z]*\W[a-z0-9]*")
+            acl_match = acl_pattern.search(str(acl_verify_reply))
+
+            # Verification of interface configuration
+            interface_verify_reply = device.nc.request(interface_verification_request)
+            logger.info("Interface Verification Reply:\n%s", interface_verify_reply)
+            interface_pattern = re.compile(r"Ethernet1/9")
+            interface_match = interface_pattern.search(str(interface_verify_reply))
+
+            # Check if both ACL and interface configurations are verified successfully
+            if acl_match and interface_match:
+                logger.info("The ACL and interface are verified successfully.")
+            else:
+                self.failed("ACL or interface verification failed.")
+        except Exception as e:
+            self.failed(f"Failed to send verification command: {e}")
+
+
+
+class MultipleRulesACL(aetest.Testcase):
+ 
+    @aetest.test
+    def verify_multiple_rules(self, device):
+        acl_verification_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="108" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>show ip access-list user-acl-ssh</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+            if device.nc.connected:
+                acl_verify_reply = device.nc.request(acl_verification_request)
+                logger.info("ACL Verification Reply: \n%s", acl_verify_reply)
+ 
+                acl_output = str(acl_verify_reply)
+
+                rule_deny = r"<mod:seqno>10</mod:seqno>\s*<mod:permitdeny>deny</mod:permitdeny>\s*<mod:ip>ip</mod:ip>\s*<mod:src_ip_prefix>192.168\.6\.1/24</mod:src_ip_prefix>\s*<mod:dest_any>any</mod:dest_any>"
+
+                rule_permit = r"<mod:seqno>20</mod:seqno>\s*<mod:permitdeny>permit</mod:permitdeny>\s*<mod:ip>ip</mod:ip>\s*<mod:src_ip_prefix>192.168\.2\.1/24</mod:src_ip_prefix>\s*<mod:dest_any>any</mod:dest_any>"
+ 
+                match_deny = re.search(rule_deny, acl_output)
+                match_permit = re.search(rule_permit, acl_output)
+
+                if match_deny and match_permit:
+                    logger.info("Multiple rules in ACL are verified successfully.")
+                else:
+                    self.failed("Multiple rules in ACL verification failed.")
+            else:
+                self.failed("NETCONF connection not active. Cannot verify ACL rules.")
+        except Exception as e:
+            logger.error(f"Failed to send verification command: {e}")
+            raise RuntimeError(f"Failed to send verification command: {e}")
+
+
+class PermitACL(aetest.Testcase):
+ 
+    @aetest.test
+    def verify_permit_rule(self, device):
+        acl_verification_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="108" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>show ip access-lists user-acl-ssh</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+            if device.nc.connected:
+                verification_reply = device.nc.request(acl_verification_request)
+                acl_output = str(verification_reply)
+                logger.info("ACL Verification Reply: \n%s", verification_reply)
+ 
+                rule_pattern = r'<mod:seqno>[1-9][0-9]'
+                match = re.search(rule_pattern, acl_output)
+ 
+                if match:
+                    logger.info("Permit ACL rule is verified successfully.")
+                else:
+                    self.failed("Permit ACL rule verification failed.")
+            else:
+                self.failed("NETCONF connection not active. Cannot verify ACL rule.")
+        except Exception as e:
+            logger.error(f"Failed to send verification command: {e}")
+            raise RuntimeError(f"Failed to send verification command: {e}")
+
+
+class DenyACL(aetest.Testcase):
+ 
+    @aetest.test
+    def verify_deny_rule(self, device):
+        acl_verification_request = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <nf:rpc message-id="108" xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <nxos:exec-command>
+                <nxos:cmd>show ip access-list user-acl-ssh</nxos:cmd>
+            </nxos:exec-command>
+        </nf:rpc>
+        """
+        try:
+            if device.nc.connected:
+                verification_reply = device.nc.request(acl_verification_request)
+                acl_output = str(verification_reply)
+                logger.info("ACL Verification Reply: \n%s", verification_reply)
+ 
+                rule_pattern = r'<mod:seqno>[1-9][0-9]'
+                match = re.search(rule_pattern, acl_output)
+
+                if match:
+                    logger.info("Deny ACL rule is verified successfully.")
+                else:
+                    self.failed("Deny ACL rule verification failed.")
+            else:
+                self.failed("NETCONF connection not active. Cannot verify ACL rule.")
+        except Exception as e:
+            logger.error(f"Failed to send verification command: {e}")
+            raise RuntimeError(f"Failed to send verification command: {e}")
+
+
+class PingInterface(aetest.Testcase):
+    @aetest.test
+    def ping_interface(self, device):
+        ping_request = """
+        <rpc message-id="113" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nxos="http://www.cisco.com/nxos:1.0">
+            <exec-command>
+                <cmd>ping 192.168.2.1/24</cmd>
+            </exec-command>
+        </rpc>
+        """
+        try:
+            ping_reply = device.nc.request(ping_request)
+            self.parent.parameters['ping_reply'] = ping_reply
+            logger.info("Ping Reply: \n%s", ping_reply)
+        except Exception as e:
+            self.failed(f"Failed to send ping command: {e}")
+ 
+class VerifyPing(aetest.Testcase):
+    @aetest.test
+    def verify_ping(self, ping_reply):
+        ping_output = str(ping_reply)
+        logger.info("Ping Output: \n%s", ping_output)
+ 
+        success_pattern = re.compile(r"Success rate is (\d+) percent")
+        match = success_pattern.search(ping_output)
+ 
+        if match:
+            success_rate = int(match.group(1))
+            if success_rate > 0:
+                logger.info(f"Ping was successful with a success rate of {success_rate}%.")
+            else:
+                self.failed("Ping failed with 0% success rate.")
+        else:
+            self.failed("Ping output did not contain a success rate.")
+
+class CommonCleanup(aetest.CommonCleanup):
+    @aetest.subsection
+    def disconnect_from_device(self, device):
+        device.nc.disconnect()
+        logger.info("NETCONF connected after disconnect: %s", device.nc.connected)
+
+if __name__ == '__main__':
+    aetest.main()
