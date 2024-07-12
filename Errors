@@ -1,0 +1,319 @@
+DEBUG:__main__:Connecting to the device
+DEBUG:ncclient.transport.session:[host None session 0x7fc4c7a5c940] <SSHSession(session, initial daemon)> created: client_capabilities=<dict_keyiterator object at 0x7fc4c415e6d0>
+DEBUG:ncclient.transport.ssh:starting thread (client mode): 0xc4162ac0
+DEBUG:ncclient.transport.ssh:Local version/idstring: SSH-2.0-paramiko_3.4.0
+DEBUG:ncclient.transport.ssh:Remote version/idstring: SSH-2.0-OpenSSH_8.3 PKIX[12.5.1]
+INFO:ncclient.transport.ssh:Connected (version 2.0, client OpenSSH_8.3)
+DEBUG:ncclient.transport.ssh:=== Key exchange possibilities ===
+DEBUG:ncclient.transport.ssh:kex algos: curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group16-sha512, diffie-hellman-group14-sha1, diffie-hellman-group14-sha256
+DEBUG:ncclient.transport.ssh:server key: ssh-rsa, rsa-sha2-256
+DEBUG:ncclient.transport.ssh:client encrypt: aes128-ctr, aes256-ctr, aes256-gcm@openssh.com, aes128-gcm@openssh.com
+DEBUG:ncclient.transport.ssh:server encrypt: aes128-ctr, aes256-ctr, aes256-gcm@openssh.com, aes128-gcm@openssh.com
+DEBUG:ncclient.transport.ssh:client mac: hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:ncclient.transport.ssh:server mac: hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:ncclient.transport.ssh:client compress: none, zlib@openssh.com
+DEBUG:ncclient.transport.ssh:server compress: none, zlib@openssh.com
+DEBUG:ncclient.transport.ssh:client lang: <none>
+DEBUG:ncclient.transport.ssh:server lang: <none>
+DEBUG:ncclient.transport.ssh:kex follows: False
+DEBUG:ncclient.transport.ssh:=== Key exchange agreements ===
+DEBUG:ncclient.transport.ssh:Kex: curve25519-sha256@libssh.org
+DEBUG:ncclient.transport.ssh:HostKey: rsa-sha2-256
+DEBUG:ncclient.transport.ssh:Cipher: aes128-ctr
+DEBUG:ncclient.transport.ssh:MAC: hmac-sha2-256
+DEBUG:ncclient.transport.ssh:Compression: none
+DEBUG:ncclient.transport.ssh:=== End of kex handshake ===
+DEBUG:ncclient.transport.ssh:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:ncclient.transport.ssh:Switch to new keys ...
+DEBUG:ncclient.transport.ssh:Got EXT_INFO: {'publickey-algorithms@roumenpetrov.info': b'x509v3-sign-rsa,x509v3-sign-dss,ssh-ed25519,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa,rsa-sha2-256,rsa-sha2-512', 'server-sig-algs': b'x509v3-sign-rsa,x509v3-sign-dss,ssh-ed25519,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa,rsa-sha2-256,rsa-sha2-512'}
+DEBUG:ncclient.transport.ssh:userauth is OK
+INFO:ncclient.transport.ssh:Auth banner: b'User Access Verification\n'
+INFO:ncclient.transport.ssh:Authentication (password) successful!
+DEBUG:ncclient.transport.ssh:[chan 0] Max packet in: 32768 bytes
+DEBUG:ncclient.transport.ssh:Received global request "hostkeys-00@openssh.com"
+DEBUG:ncclient.transport.ssh:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:ncclient.transport.ssh:[chan 0] Max packet out: 32768 bytes
+DEBUG:ncclient.transport.ssh:Secsh channel 0 opened.
+DEBUG:ncclient.transport.ssh:[chan netconf-subsystem-0] Sesch channel 0 request ok
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] installing listener <ncclient.transport.session.NotificationHandler object at 0x7fc4c4180e80>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] installing listener <ncclient.transport.session.HelloHandler object at 0x7fc4c41808e0>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] queueing <?xml version="1.0" encoding="UTF-8"?><nc:hello xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"><nc:capabilities><nc:capability>urn:ietf:params:netconf:base:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:base:1.1</nc:capability><nc:capability>urn:ietf:params:netconf:capability:writable-running:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:candidate:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:confirmed-commit:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:rollback-on-error:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:startup:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:url:1.0?scheme=http,ftp,file,https,sftp</nc:capability><nc:capability>urn:ietf:params:netconf:capability:validate:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:xpath:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:notification:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:interleave:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:with-defaults:1.0</nc:capability></nc:capabilities></nc:hello>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] starting main loop
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] selector type = EpollSelector
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session 0x7fc4c7a5c940] parsing netconf v1.0
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] Sending message
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] Sending:
+b'<?xml version="1.0" encoding="UTF-8"?><nc:hello xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"><nc:capabilities><nc:capability>urn:ietf:params:netconf:base:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:base:1.1</nc:capability><nc:capability>urn:ietf:params:netconf:capability:writable-running:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:candidate:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:confirmed-commit:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:rollback-on-error:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:startup:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:url:1.0?scheme=http,ftp,file,https,sftp</nc:capability><nc:capability>urn:ietf:params:netconf:capability:validate:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:xpath:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:notification:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:interleave:1.0</nc:capability><nc:capability>urn:ietf:params:netconf:capability:with-defaults:1.0</nc:capability></nc:capabilities></nc:hello>]]>]]>'
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session 0x7fc4c7a5c940] parsing netconf v1.0
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] Received message from host
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] Received:
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+        <capability>urn:ietf:params:netconf:base:1.1</capability>
+        <capability>urn:ietf:params:netconf:capability:writable-running:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:rollback-on-error:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:candidate:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:validate:1.1</capability>
+        <capability>urn:ietf:params:netconf:capability:confirmed-commit:1.1</capability>
+        <capability>urn:ietf:params:netconf:capability:notification:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:interleave:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:with-defaults:1.0?basic-mode=report-all</capability>
+        <capability>http://cisco.com/ns/yang/cisco-nx-os-device?revision=2022-02-04&amp;module=Cisco-NX-OS-device</capability>
+        <capability>http://openconfig.net/yang/acl?revision=2019-11-27&amp;module=openconfig-acl&amp;deviations=cisco-nx-openconfig-acl-deviations</capability>
+        <capability>http://openconfig.net/yang/bfd?revision=2019-10-25&amp;module=openconfig-bfd&amp;deviations=cisco-nx-openconfig-bfd-deviations</capability>
+        <capability>http://openconfig.net/yang/bgp-policy?revision=2019-11-28&amp;module=openconfig-bgp-policy&amp;deviations=cisco-nx-openconfig-bgp-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces?revision=2017-07-14&amp;module=openconfig-interfaces&amp;deviations=cisco-nx-openconfig-interfaces-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/aggregate?revision=2017-07-14&amp;module=openconfig-if-aggregate&amp;deviations=cisco-nx-openconfig-if-aggregate-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/ethernet?revision=2017-07-14&amp;module=openconfig-if-ethernet&amp;deviations=cisco-nx-openconfig-if-ethernet-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/ip?revision=2018-01-05&amp;module=openconfig-if-ip&amp;deviations=cisco-nx-openconfig-if-ip-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/ip-ext?revision=2018-01-05&amp;module=openconfig-if-ip-ext&amp;deviations=cisco-nx-openconfig-if-ip-ext-deviations</capability>
+        <capability>http://openconfig.net/yang/lacp?revision=2018-11-21&amp;module=openconfig-lacp&amp;deviations=cisco-nx-openconfig-lacp-deviations</capability>
+        <capability>http://openconfig.net/yang/lldp?revision=2018-11-21&amp;module=openconfig-lldp&amp;deviations=cisco-nx-openconfig-lldp-deviations</capability>
+        <capability>http://openconfig.net/yang/network-instance?revision=2018-11-21&amp;module=openconfig-network-instance&amp;deviations=cisco-nx-openconfig-network-instance-deviations</capability>
+        <capability>http://openconfig.net/yang/network-instance/policy?revision=2018-11-21&amp;module=openconfig-network-instance-policy&amp;deviations=cisco-nx-openconfig-network-instance-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/ospf-policy?revision=2017-08-24&amp;module=openconfig-ospf-policy&amp;deviations=cisco-nx-openconfig-ospf-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/platform?revision=2019-04-16&amp;module=openconfig-platform&amp;deviations=cisco-nx-openconfig-platform-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/cpu?revision=2018-11-21&amp;module=openconfig-platform-cpu&amp;deviations=cisco-nx-openconfig-platform-cpu-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/fan?revision=2018-11-21&amp;module=openconfig-platform-fan&amp;deviations=cisco-nx-openconfig-platform-fan-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/linecard?revision=2018-11-21&amp;module=openconfig-platform-linecard&amp;deviations=cisco-nx-openconfig-platform-linecard-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/port?revision=2018-11-21&amp;module=openconfig-platform-port&amp;deviations=cisco-nx-openconfig-platform-port-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/psu?revision=2018-11-21&amp;module=openconfig-platform-psu&amp;deviations=cisco-nx-openconfig-platform-psu-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/transceiver?revision=2018-11-25&amp;module=openconfig-platform-transceiver&amp;deviations=cisco-nx-openconfig-platform-transceiver-deviations</capability>
+        <capability>http://openconfig.net/yang/qos?revision=2019-11-28&amp;module=openconfig-qos&amp;deviations=cisco-nx-openconfig-qos-deviations</capability>
+        <capability>http://openconfig.net/yang/relay-agent?revision=2018-11-21&amp;module=openconfig-relay-agent&amp;deviations=cisco-nx-openconfig-relay-agent-deviations</capability>
+        <capability>http://openconfig.net/yang/routing-policy?revision=2018-11-21&amp;module=openconfig-routing-policy&amp;deviations=cisco-nx-openconfig-routing-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/spanning-tree?revision=2019-11-28&amp;module=openconfig-spanning-tree&amp;deviations=cisco-nx-openconfig-spanning-tree-deviations</capability>
+        <capability>http://openconfig.net/yang/system?revision=2019-03-15&amp;module=openconfig-system&amp;deviations=cisco-nx-openconfig-system-deviations</capability>
+        <capability>http://openconfig.net/yang/telemetry?revision=2018-11-21&amp;module=openconfig-telemetry&amp;deviations=cisco-nx-openconfig-telemetry-deviations</capability>
+        <capability>http://openconfig.net/yang/vlan?revision=2018-11-21&amp;module=openconfig-vlan&amp;deviations=cisco-nx-openconfig-vlan-deviations</capability>
+    </capabilities>
+    <session-id>144156398</session-id>
+</hello>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] dispatching message to different listeners: <?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+        <capability>urn:ietf:params:netconf:base:1.1</capability>
+        <capability>urn:ietf:params:netconf:capability:writable-running:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:rollback-on-error:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:candidate:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:validate:1.1</capability>
+        <capability>urn:ietf:params:netconf:capability:confirmed-commit:1.1</capability>
+        <capability>urn:ietf:params:netconf:capability:notification:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:interleave:1.0</capability>
+        <capability>urn:ietf:params:netconf:capability:with-defaults:1.0?basic-mode=report-all</capability>
+        <capability>http://cisco.com/ns/yang/cisco-nx-os-device?revision=2022-02-04&amp;module=Cisco-NX-OS-device</capability>
+        <capability>http://openconfig.net/yang/acl?revision=2019-11-27&amp;module=openconfig-acl&amp;deviations=cisco-nx-openconfig-acl-deviations</capability>
+        <capability>http://openconfig.net/yang/bfd?revision=2019-10-25&amp;module=openconfig-bfd&amp;deviations=cisco-nx-openconfig-bfd-deviations</capability>
+        <capability>http://openconfig.net/yang/bgp-policy?revision=2019-11-28&amp;module=openconfig-bgp-policy&amp;deviations=cisco-nx-openconfig-bgp-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces?revision=2017-07-14&amp;module=openconfig-interfaces&amp;deviations=cisco-nx-openconfig-interfaces-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/aggregate?revision=2017-07-14&amp;module=openconfig-if-aggregate&amp;deviations=cisco-nx-openconfig-if-aggregate-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/ethernet?revision=2017-07-14&amp;module=openconfig-if-ethernet&amp;deviations=cisco-nx-openconfig-if-ethernet-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/ip?revision=2018-01-05&amp;module=openconfig-if-ip&amp;deviations=cisco-nx-openconfig-if-ip-deviations</capability>
+        <capability>http://openconfig.net/yang/interfaces/ip-ext?revision=2018-01-05&amp;module=openconfig-if-ip-ext&amp;deviations=cisco-nx-openconfig-if-ip-ext-deviations</capability>
+        <capability>http://openconfig.net/yang/lacp?revision=2018-11-21&amp;module=openconfig-lacp&amp;deviations=cisco-nx-openconfig-lacp-deviations</capability>
+        <capability>http://openconfig.net/yang/lldp?revision=2018-11-21&amp;module=openconfig-lldp&amp;deviations=cisco-nx-openconfig-lldp-deviations</capability>
+        <capability>http://openconfig.net/yang/network-instance?revision=2018-11-21&amp;module=openconfig-network-instance&amp;deviations=cisco-nx-openconfig-network-instance-deviations</capability>
+        <capability>http://openconfig.net/yang/network-instance/policy?revision=2018-11-21&amp;module=openconfig-network-instance-policy&amp;deviations=cisco-nx-openconfig-network-instance-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/ospf-policy?revision=2017-08-24&amp;module=openconfig-ospf-policy&amp;deviations=cisco-nx-openconfig-ospf-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/platform?revision=2019-04-16&amp;module=openconfig-platform&amp;deviations=cisco-nx-openconfig-platform-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/cpu?revision=2018-11-21&amp;module=openconfig-platform-cpu&amp;deviations=cisco-nx-openconfig-platform-cpu-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/fan?revision=2018-11-21&amp;module=openconfig-platform-fan&amp;deviations=cisco-nx-openconfig-platform-fan-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/linecard?revision=2018-11-21&amp;module=openconfig-platform-linecard&amp;deviations=cisco-nx-openconfig-platform-linecard-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/port?revision=2018-11-21&amp;module=openconfig-platform-port&amp;deviations=cisco-nx-openconfig-platform-port-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/psu?revision=2018-11-21&amp;module=openconfig-platform-psu&amp;deviations=cisco-nx-openconfig-platform-psu-deviations</capability>
+        <capability>http://openconfig.net/yang/platform/transceiver?revision=2018-11-25&amp;module=openconfig-platform-transceiver&amp;deviations=cisco-nx-openconfig-platform-transceiver-deviations</capability>
+        <capability>http://openconfig.net/yang/qos?revision=2019-11-28&amp;module=openconfig-qos&amp;deviations=cisco-nx-openconfig-qos-deviations</capability>
+        <capability>http://openconfig.net/yang/relay-agent?revision=2018-11-21&amp;module=openconfig-relay-agent&amp;deviations=cisco-nx-openconfig-relay-agent-deviations</capability>
+        <capability>http://openconfig.net/yang/routing-policy?revision=2018-11-21&amp;module=openconfig-routing-policy&amp;deviations=cisco-nx-openconfig-routing-policy-deviations</capability>
+        <capability>http://openconfig.net/yang/spanning-tree?revision=2019-11-28&amp;module=openconfig-spanning-tree&amp;deviations=cisco-nx-openconfig-spanning-tree-deviations</capability>
+        <capability>http://openconfig.net/yang/system?revision=2019-03-15&amp;module=openconfig-system&amp;deviations=cisco-nx-openconfig-system-deviations</capability>
+        <capability>http://openconfig.net/yang/telemetry?revision=2018-11-21&amp;module=openconfig-telemetry&amp;deviations=cisco-nx-openconfig-telemetry-deviations</capability>
+        <capability>http://openconfig.net/yang/vlan?revision=2018-11-21&amp;module=openconfig-vlan&amp;deviations=cisco-nx-openconfig-vlan-deviations</capability>
+    </capabilities>
+    <session-id>144156398</session-id>
+</hello>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] dispatching message to listener: <ncclient.transport.session.NotificationHandler object at 0x7fc4c4180e80>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session 0x7fc4c7a5c940] dispatching message to listener: <ncclient.transport.session.HelloHandler object at 0x7fc4c41808e0>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] discarding listener <ncclient.transport.session.HelloHandler object at 0x7fc4c41808e0>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] After 'hello' message selecting netconf:base:1.1 for encoding
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] initialized: session-id=144156398 | server_capabilities=<dict_keyiterator object at 0x7fc4c415e6d0>
+DEBUG:__main__:Configuring ACL
+DEBUG:__main__:Config payload: 
+    <config>
+        <acl xmlns="http://openconfig.net/yang/acl">
+            <acl-sets>
+                <acl-set>
+                    <name>my_acll1</name>
+                    <type>ACL_IPV4</type>
+                    <config>
+                        <name>my_acll1</name>
+                        <type>ACL_IPV4</type>
+                    </config>
+                    <acl-entries>
+                        <acl-entry>
+                            <sequence-id>10</sequence-id>
+                            <config>
+                                <sequence-id>10</sequence-id>
+                                <protocol>6</protocol>
+                                <source-address>192.168.1.1/32</source-address>
+                                <destination-address>192.168.2.1/32</destination-address>
+                                <source-port>any</source-port>
+                                <destination-port>80</destination-port>
+                                <actions>
+                                    <forwarding-action>ACCEPT</forwarding-action>
+                                </actions>
+                            </config>
+                        </acl-entry>
+                    </acl-entries>
+                </acl-set>
+            </acl-sets>
+        </acl>
+    </config>
+    
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] installing listener <ncclient.operations.rpc.RPCReplyListener object at 0x7fc4c4162790>
+INFO:ncclient.operations.rpc:[host 10.133.35.148 session-id 144156398] Requesting 'EditConfig'
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] queueing <?xml version="1.0" encoding="UTF-8"?><nc:rpc xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:e282d275-4b62-47f1-b2d4-584f1d4a14b4"><nc:edit-config><nc:target><nc:running/></nc:target><config>
+        <acl xmlns="http://openconfig.net/yang/acl">
+            <acl-sets>
+                <acl-set>
+                    <name>my_acll1</name>
+                    <type>ACL_IPV4</type>
+                    <config>
+                        <name>my_acll1</name>
+                        <type>ACL_IPV4</type>
+                    </config>
+                    <acl-entries>
+                        <acl-entry>
+                            <sequence-id>10</sequence-id>
+                            <config>
+                                <sequence-id>10</sequence-id>
+                                <protocol>6</protocol>
+                                <source-address>192.168.1.1/32</source-address>
+                                <destination-address>192.168.2.1/32</destination-address>
+                                <source-port>any</source-port>
+                                <destination-port>80</destination-port>
+                                <actions>
+                                    <forwarding-action>ACCEPT</forwarding-action>
+                                </actions>
+                            </config>
+                        </acl-entry>
+                    </acl-entries>
+                </acl-set>
+            </acl-sets>
+        </acl>
+    </config></nc:edit-config></nc:rpc>
+DEBUG:ncclient.operations.rpc:[host 10.133.35.148 session-id 144156398] Sync request, will wait for timeout=30
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Sending message
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Sending:
+b'\n#1523\n<?xml version="1.0" encoding="UTF-8"?><nc:rpc xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:e282d275-4b62-47f1-b2d4-584f1d4a14b4"><nc:edit-config><nc:target><nc:running/></nc:target><config>\n        <acl xmlns="http://openconfig.net/yang/acl">\n            <acl-sets>\n                <acl-set>\n                    <name>my_acll1</name>\n                    <type>ACL_IPV4</type>\n                    <config>\n                        <name>my_acll1</name>\n                        <type>ACL_IPV4</type>\n                    </config>\n                    <acl-entries>\n                        <acl-entry>\n                            <sequence-id>10</sequence-id>\n                            <config>\n                                <sequence-id>10</sequence-id>\n                                <protocol>6</protocol>\n                                <source-address>192.168.1.1/32</source-address>\n                                <destination-address>192.168.2.1/32</destination-address>\n                                <source-port>any</source-port>\n                                <destination-port>80</destination-port>\n                                <actions>\n                                    <forwarding-action>ACCEPT</forwarding-action>\n                                </actions>\n                            </config>\n                        </acl-entry>\n                    </acl-entries>\n                </acl-set>\n            </acl-sets>\n        </acl>\n    </config></nc:edit-config></nc:rpc>\n##\n'
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: starting
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: working with buffer of 672 bytes
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: matching from 0 bytes from start of buffer
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: regular expression start=0, end=6
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: found chunk delimiter
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: chunk size 662 bytes
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: appending 662 bytes
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: fragment = "<?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:e282d275-4b62-47f1-b2d4-584f1d4a14b4">
+    <rpc-error>
+        <error-type>protocol</error-type>
+        <error-tag>unknown-element</error-tag>
+        <error-severity>error</error-severity>
+        <error-path>/acl/acl-sets/acl-set/acl-entries/acl-entry/config/protocol</error-path>
+    </rpc-error>
+    <rpc-error>
+        <error-type>protocol</error-type>
+        <error-tag>unknown-element</error-tag>
+        <error-severity>error</error-severity>
+        <error-path>/acl/acl-sets/acl-set/name</error-path>
+    </rpc-error>
+</rpc-reply>
+"
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: matching from 668 bytes from start of buffer
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: regular expression start=0, end=4
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: found end of message delimiter
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Received message from host
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Received:
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:e282d275-4b62-47f1-b2d4-584f1d4a14b4">
+    <rpc-error>
+        <error-type>protocol</error-type>
+        <error-tag>unknown-element</error-tag>
+        <error-severity>error</error-severity>
+        <error-path>/acl/acl-sets/acl-set/acl-entries/acl-entry/config/protocol</error-path>
+    </rpc-error>
+    <rpc-error>
+        <error-type>protocol</error-type>
+        <error-tag>unknown-element</error-tag>
+        <error-severity>error</error-severity>
+        <error-path>/acl/acl-sets/acl-set/name</error-path>
+    </rpc-error>
+</rpc-reply>
+
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] dispatching message to different listeners: <?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:e282d275-4b62-47f1-b2d4-584f1d4a14b4">
+    <rpc-error>
+        <error-type>protocol</error-type>
+        <error-tag>unknown-element</error-tag>
+        <error-severity>error</error-severity>
+        <error-path>/acl/acl-sets/acl-set/acl-entries/acl-entry/config/protocol</error-path>
+    </rpc-error>
+    <rpc-error>
+        <error-type>protocol</error-type>
+        <error-tag>unknown-element</error-tag>
+        <error-severity>error</error-severity>
+        <error-path>/acl/acl-sets/acl-set/name</error-path>
+    </rpc-error>
+</rpc-reply>
+
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] dispatching message to listener: <ncclient.transport.session.NotificationHandler object at 0x7fc4c4180e80>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] dispatching message to listener: <ncclient.operations.rpc.RPCReplyListener object at 0x7fc4c4162790>
+DEBUG:ncclient.operations.rpc:[host 10.133.35.148 session-id 144156398] Delivering to <ncclient.operations.edit.EditConfig object at 0x7fc4c4162760>
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: saving back rest of message after 672 bytes, original size 672
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: ending
+ERROR:__main__:RPCError: error: not an error message in the reply. Enable debug
+error: not an error message in the reply. Enable debug
+ERROR:__main__:ACL configuration failed.
+INFO:ncclient.operations.rpc:[host 10.133.35.148 session-id 144156398] Requesting 'CloseSession'
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] queueing <?xml version="1.0" encoding="UTF-8"?><nc:rpc xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:05528e21-8596-4bbe-8eb2-073c88d51214"><nc:close-session/></nc:rpc>
+DEBUG:ncclient.operations.rpc:[host 10.133.35.148 session-id 144156398] Sync request, will wait for timeout=30
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Sending message
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Sending:
+b'\n#184\n<?xml version="1.0" encoding="UTF-8"?><nc:rpc xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:05528e21-8596-4bbe-8eb2-073c88d51214"><nc:close-session/></nc:rpc>\n##\n'
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: starting
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: working with buffer of 191 bytes
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: matching from 0 bytes from start of buffer
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: regular expression start=0, end=6
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: found chunk delimiter
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: chunk size 181 bytes
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: appending 181 bytes
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: fragment = "<?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:05528e21-8596-4bbe-8eb2-073c88d51214">
+    <ok/>
+</rpc-reply>
+"
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: matching from 187 bytes from start of buffer
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: regular expression start=0, end=4
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: found end of message delimiter
+INFO:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Received message from host
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] Received:
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:05528e21-8596-4bbe-8eb2-073c88d51214">
+    <ok/>
+</rpc-reply>
+
+DEBUG:ncclient.transport.ssh:[chan netconf-subsystem-0] EOF received (netconf-subsystem-0)
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] dispatching message to different listeners: <?xml version="1.0" encoding="UTF-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="urn:uuid:05528e21-8596-4bbe-8eb2-073c88d51214">
+    <ok/>
+</rpc-reply>
+
+DEBUG:ncclient.transport.ssh:[chan netconf-subsystem-0] EOF sent (netconf-subsystem-0)
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] dispatching message to listener: <ncclient.transport.session.NotificationHandler object at 0x7fc4c4180e80>
+DEBUG:ncclient.transport.ssh:[host 10.133.35.148 session-id 144156398] dispatching message to listener: <ncclient.operations.rpc.RPCReplyListener object at 0x7fc4c4162790>
+DEBUG:ncclient.operations.rpc:[host 10.133.35.148 session-id 144156398] Delivering to <ncclient.operations.session.CloseSession object at 0x7fc4c4162760>
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: saving back rest of message after 191 bytes, original size 191
+DEBUG:ncclient.transport.parser:[host 10.133.35.148 session-id 144156398] _parse11: ending
