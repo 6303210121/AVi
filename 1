@@ -1,3 +1,4 @@
+#Netbox_test1.py 
 
 import requests
 import json
@@ -11,8 +12,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 switch_ip = "10.133.35.148"
 username = "admin"
 password = "tcs123"
-netbox_url = "http://netbox.example.com"
-netbox_token = "your_netbox_api_token"
+netbox_url = "http://10.133.35.137:8000"
+netbox_token = "b10f953429d54bcbe45a24445161f863b202089b"
 
 # NX-API URL - ensure you're using the correct protocol (http or https)
 nx_api_url = f"https://{switch_ip}/ins"
@@ -58,7 +59,7 @@ try:
             exit(1)
 
         # Update NetBox with the fetched hardware details
-        device_name = "your_device_name_in_netbox"
+        device_name = "Device"
         device = nb.dcim.devices.get(name=device_name)
 
         if device:
