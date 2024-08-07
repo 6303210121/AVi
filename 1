@@ -1,0 +1,28 @@
+
+import requests
+import json
+
+# NX-API endpoint
+url = "http://10.133.35.148/ins"
+switchuser = "admin"
+switchpassword = "tcs123"
+
+# Headers for NX-API
+myheaders = {'content-type': 'application/json'}
+
+# NX-API payload for the command to be executed
+payload = {
+    "ins_api": {
+        "version": "1.0",
+        "type": "cli_show",
+        "chunk": "0",
+        "sid": "1",
+        "input": "show version",
+        "output_format": "json"
+    }
+}
+
+response = requests.post(url, data=json.dumps(payload), headers=myheaders, auth=(switchuser, switchpassword)).json()
+
+# Print the response from the router
+print(json.dumps(response, indent=4))
