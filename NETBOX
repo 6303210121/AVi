@@ -1,0 +1,186 @@
+
+To add a Cisco Nexus switch to NetBox and fetch its hardware details, you can follow these general steps:
+
+### 1. Add Cisco Nexus Switch to NetBox
+
+#### Step 1: Log into NetBox
+- Open your web browser and navigate to your NetBox instance.
+- Log in with your credentials.
+
+#### Step 2: Add the Device Type
+Before adding a specific device, ensure that the device type for the Cisco Nexus switch is defined in NetBox.
+
+- Go to the **Device Types** section under **DCIM**.
+- Click **Add** to create a new device type.
+  - **Manufacturer**: Select or add Cisco.
+  - **Model**: Enter the model of your Nexus switch (e.g., Nexus 9000).
+  - **Slug**: Enter a slug (a simplified version of the model name, usually lowercase and hyphenated).
+  - **Part Number**: (Optional) Enter the part number if you have it.
+  - **Height (U)**: Enter the height in rack units.
+  - **Is Full Depth**: Select this if the device occupies the full depth of the rack.
+  - **Comments**: (Optional) Add any comments if necessary.
+- Click **Create**.
+
+#### Step 3: Add the Device
+- Go to the **Devices** section under **DCIM**.
+- Click **Add** to create a new device.
+  - **Name**: Enter a name for the device.
+  - **Device Role**: Select the appropriate role (e.g., Switch).
+  - **Device Type**: Select the Cisco Nexus device type you created earlier.
+  - **Site**: Select the site where the device is located.
+  - **Rack**: (Optional) Select the rack if the device is mounted in one.
+  - **Position**: (Optional) Enter the rack position.
+  - **Tenant**: (Optional) Select a tenant if applicable.
+  - **Platform**: Select the appropriate platform (e.g., NX-OS).
+  - **Serial Number**: (Optional) Enter the serial number.
+  - **Asset Tag**: (Optional) Enter the asset tag.
+  - **Comments**: (Optional) Add any comments if necessary.
+- Click **Create**.
+
+### 2. Fetch Hardware Details of the Switch
+
+To fetch hardware details from a Cisco Nexus switch, you can use a script that leverages the NX-API or SNMP to gather the necessary information. Here's an example using Python and the NX-API:
+
+#### Step 1: Enable NX-API on the Nexus Switch
+Log into the Nexus switch and enable the NX-API:
+
+```shell
+switch# conf t
+switch(config)# feature nxapi
+```
+
+#### Step 2: Install Required Python Libraries
+Ensure you have the required Python libraries installed. You may need `requests` and `json`.
+
+```shell
+pip install requests
+```
+
+#### Step 3: Create a Python Script to Fetch Hardware Details
+
+```python
+import requests
+import json
+
+# Replace these variables with your switch's details
+switch_ip = "10.0.0.1"
+username = "admin"
+password = "your_password"
+
+# NX-API URL
+url = f"https://{switch_ip}/ins"
+
+# Headers for the NX-API request
+headers = {
+    "content-type": "application/json-rpc"
+}
+
+# Payload to fetch hardware details
+payload = [
+    {
+        "jsonrpc": "2.0",
+        "method": "cli",
+        "params": {
+            "cmd": "show inventory",
+            "version": 1
+        },
+        "id": 1
+    }
+]
+
+# Make the request
+response = requests.post(url, data=json.dumps(payload), headers=headers, auth=(username, password), verify=False)
+
+# Parse the response
+if response.status_code == 200:
+    data = response.json()
+    inventory = data['result']['body']['TABLE_inv']['ROW_inv']
+    print(json.dumps(inventory, indent=4))
+else:
+    print(f"Failed to fetch details: {response.status_code}")
+
+```
+
+#### Step 4: Run the Script
+Run the script to fetch the hardware details of the Cisco Nexus switch. The output will include information about the switch's hardware components.
+
+### 3. Integrate with NetBox (Optional)
+You can extend the script to automatically update NetBox with the fetched hardware details using the NetBox API.
+
+#### Step 1: Install the NetBox API Client
+Install the `pynetbox` library:
+
+```shell
+pip install pynetbox
+```
+
+#### Step 2: Extend the Script to Update NetBox
+
+```python
+import requests
+import json
+import pynetbox
+
+# Replace these variables with your switch's details and NetBox API details
+switch_ip = "10.0.0.1"
+username = "admin"
+password = "your_password"
+netbox_url = "http://netbox.example.com"
+netbox_token = "your_netbox_api_token"
+
+# NX-API URL
+url = f"https://{switch_ip}/ins"
+
+# Headers for the NX-API request
+headers = {
+    "content-type": "application/json-rpc"
+}
+
+# Payload to fetch hardware details
+payload = [
+    {
+        "jsonrpc": "2.0",
+        "method": "cli",
+        "params": {
+            "cmd": "show inventory",
+            "version": 1
+        },
+        "id": 1
+    }
+]
+
+# Make the request
+response = requests.post(url, data=json.dumps(payload), headers=headers, auth=(username, password), verify=False)
+
+# Parse the response
+if response.status_code == 200:
+    data = response.json()
+    inventory = data['result']['body']['TABLE_inv']['ROW_inv']
+    print(json.dumps(inventory, indent=4))
+
+    # Connect to NetBox
+    nb = pynetbox.api(netbox_url, token=netbox_token)
+
+    # Update NetBox with the fetched hardware details
+    device_name = "your_device_name_in_netbox"
+    device = nb.dcim.devices.get(name=device_name)
+
+    if device:
+        for item in inventory:
+            part_number = item.get('productid', 'N/A')
+            serial_number = item.get('serialnum', 'N/A')
+            description = item.get('desc', 'N/A')
+
+            print(f"Part Number: {part_number}, Serial Number: {serial_number}, Description: {description}")
+
+            # You can update custom fields or other attributes in NetBox as needed
+            # For example, update a custom field:
+            # custom_fields = device.custom_fields
+            # custom_fields['part_number'] = part_number
+            # device.update({'custom_fields': custom_fields})
+else:
+    print(f"Failed to fetch details: {response.status_code}")
+
+```
+
+This script fetches hardware details from a Cisco Nexus switch using NX-API and updates the corresponding device in NetBox. Ensure you adjust the script according to your specific needs and environment.
