@@ -11,7 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 switch_ip = "10.133.35.148"
 switch_username = "admin"
 switch_password = "tcs123"
-netbox_url = "http://netbox.example.com"  # Ensure this is the NetBox URL
+netbox_url = "https://10.133.35.148:8000"
 netbox_token = "b10f953429d54bcbe45a24445161f863b202089b"
 
 # NX-API URL - ensure you're using the correct protocol (http or https)
@@ -136,6 +136,21 @@ try:
             # custom_fields = device.custom_fields
             # custom_fields['part_number'] = part_number
             # device.update({'custom_fields': custom_fields})
+
+        # Fetch and print rack details
+        rack = nb.dcim.racks.get(device.rack.id)
+        if rack:
+            print("Rack Details:")
+            print(f"Name: {rack.name}")
+            print(f"Site: {rack.site.name}")
+            print(f"Facility ID: {rack.facility_id}")
+            print(f"Status: {rack.status.label}")
+            print(f"U Height: {rack.u_height}")
+            print(f"Type: {rack.type.label}")
+            print(f"Width: {rack.width.label}")
+            print(f"Tenant: {rack.tenant.name if rack.tenant else 'N/A'}")
+        else:
+            print("No rack details found for this device.")
 
 except requests.exceptions.RequestException as e:
     print(f"Error connecting to the switch: {e}")
