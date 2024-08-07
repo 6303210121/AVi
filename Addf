@@ -22,7 +22,7 @@ headers = {
     "content-type": "application/json-rpc"
 }
 
-# Payload to fetch hardware details
+# Payloads for fetching different data
 inventory_payload = [
     {
         "jsonrpc": "2.0",
@@ -59,6 +59,18 @@ memory_payload = [
     }
 ]
 
+config_payload = [
+    {
+        "jsonrpc": "2.0",
+        "method": "cli",
+        "params": {
+            "cmd": "show running-config",
+            "version": 1
+        },
+        "id": 4
+    }
+]
+
 def fetch_data(payload):
     response = requests.post(nx_api_url, data=json.dumps(payload), headers=headers, auth=(switch_username, switch_password), verify=False)
     if response.status_code == 200:
@@ -89,6 +101,13 @@ try:
         print("Memory Details:")
         print(json.dumps(memory_details, indent=4))
 
+    # Fetch and print configuration details
+    config_data = fetch_data(config_payload)
+    if config_data:
+        config_details = config_data['result']['body']
+        print("Configuration Details:")
+        print(config_details)
+    
     # Connect to NetBox
     nb = pynetbox.api(netbox_url, token=netbox_token)
 
