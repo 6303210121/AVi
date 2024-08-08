@@ -39,6 +39,16 @@ def fetch_router_details(netbox_url, token):
         print(f"Failed to fetch data from NetBox: {response.status_code}, {response.text}")
         return None
 
+# Function to re-import fetched details into NetBox (for verification purposes)
+def re_import_fetched_details(router_details, netbox_url, token):
+    headers = {'Authorization': f'Token {token}', 'Content-Type': 'application/json'}
+    # Iterate through each device and re-import the details
+    for device in router_details.get('results', []):
+        device_id = device.get('id')
+        if device_id:
+            response = requests.put(f'{netbox_url}/api/dcim/devices/{device_id}/', headers=headers, data=json.dumps(device))
+            print(f'Re-import status for device {device_id}: {response.status_code}, {response.text}')
+
 # Main script
 if __name__ == "__main__":
     host = 'nexus-switch-ip'
@@ -58,7 +68,6 @@ if __name__ == "__main__":
     
     # Import data into NetBox
     status, response = import_to_netbox(parsed_data, netbox_url, netbox_token)
-    
     print(f'Status: {status}, Response: {response}')
     
     # Fetch router details from NetBox
@@ -66,3 +75,6 @@ if __name__ == "__main__":
     
     if router_details:
         print(json.dumps(router_details, indent=4))
+        
+        # Re-import fetched details into NetBox
+        re_import_fetched_details(router_details, netbox_url, netbox_token)
