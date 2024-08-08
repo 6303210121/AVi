@@ -1,5 +1,4 @@
 
-
 import paramiko
 import json
 import requests
@@ -30,6 +29,16 @@ def import_to_netbox(data, netbox_url, token):
     response = requests.post(f'{netbox_url}/api/dcim/devices/', headers=headers, data=json.dumps(data))
     return response.status_code, response.text
 
+# Function to fetch router details from NetBox
+def fetch_router_details(netbox_url, token):
+    headers = {'Authorization': f'Token {token}'}
+    response = requests.get(f'{netbox_url}/api/dcim/devices/', headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Failed to fetch data from NetBox: {response.status_code}, {response.text}")
+        return None
+
 # Main script
 if __name__ == "__main__":
     host = 'nexus-switch-ip'
@@ -51,3 +60,9 @@ if __name__ == "__main__":
     status, response = import_to_netbox(parsed_data, netbox_url, netbox_token)
     
     print(f'Status: {status}, Response: {response}')
+    
+    # Fetch router details from NetBox
+    router_details = fetch_router_details(netbox_url, netbox_token)
+    
+    if router_details:
+        print(json.dumps(router_details, indent=4))
