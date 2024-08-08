@@ -18,24 +18,23 @@ def parse_output(output):
     data = {}
     lines = output.splitlines()
     for line in lines:
-        if "Cisco Nexus Operating System" in line:
-            version = line.split('[')[1].split(']')[0]
-            data['cisco_version'] = version
+        # Debug: Print each line being parsed
+        print(f"Parsing line: {line}")
+
+        # Example: Check for a specific string that might indicate the version
+        if 'NXOS' in line:  # Example condition, adjust as needed
+            try:
+                version = line.split('[')[1].split(']')[0]
+                data['version'] = version
+            except IndexError:
+                print(f"Error parsing line: {line}")
+                continue
     return data
 
 # Function to import data into NetBox
 def import_to_netbox(data, netbox_url, token):
     headers = {'Authorization': f'Token {token}', 'Content-Type': 'application/json'}
-    payload = {
-        "name": "Your Device Name",  # Add your specific device name or logic to determine it
-        "device_type": 1,  # Update with your specific device type ID
-        "device_role": 1,  # Update with your specific device role ID
-        "site": 1,  # Update with your specific site ID
-        "custom_fields": {
-            "cisco_version": data['cisco_version']
-        }
-    }
-    response = requests.post(f'{netbox_url}/api/dcim/devices/', headers=headers, data=json.dumps(payload))
+    response = requests.post(f'{netbox_url}/api/dcim/devices/', headers=headers, data=json.dumps(data))
     return response.status_code, response.text
 
 # Main script
@@ -52,7 +51,7 @@ if __name__ == "__main__":
     parsed_data = parse_output(cli_output)
     
     # NetBox configuration
-    netbox_url = 'http://10.133.35.147:8000'
+    netbox_url = 'http://10.133.35.137:8000'
     netbox_token = 'your-netbox-api-token'
     
     # Import data into NetBox
