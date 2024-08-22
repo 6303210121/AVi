@@ -1,0 +1,72 @@
+
+To fetch the power utilization and rack space being used by connected Nexus switches using NetBox, you can follow these steps. This involves querying the relevant power and rack data through the NetBox API.
+
+### Prerequisites
+
+1. **NetBox Installation**: Ensure NetBox is installed and configured.
+2. **NetBox API Access**: Obtain an API token for access.
+
+### Python Script to Fetch Power and Rack Information
+
+Here's how you can use `pynetbox`, the Python client for NetBox, to fetch power utilization and rack space information.
+
+```python
+import pynetbox
+
+# NetBox API connection details
+NETBOX_URL = "http://your-netbox-instance"
+NETBOX_TOKEN = "your-netbox-api-token"
+nb = pynetbox.api(NETBOX_URL, token=NETBOX_TOKEN)
+
+# Fetch Nexus switches (you can adjust this filter to match your environment)
+nexus_switches = nb.dcim.devices.filter(device_type="Nexus")
+
+for switch in nexus_switches:
+    print(f"Device Name: {switch.name}")
+    if switch.rack:
+        print(f"Rack: {switch.rack.name}")
+        print(f"Rack Position: U{swith.position} (Front)")
+
+        # Rack space utilization
+        rack = nb.dcim.racks.get(switch.rack.id)
+        print(f"Total Rack Units: {rack.u_height}")
+        used_units = sum(device.u_height for device in rack.devices.all())
+        print(f"Used Rack Units: {used_units}")
+
+    # Fetch power utilization
+    power_ports = switch.power_ports.all()
+    total_power = 0
+    for port in power_ports:
+        # Assuming power rating is in watts (W) and available via custom fields or similar
+        if port.power_draw:
+            total_power += port.power_draw
+        print(f"  Power Port: {port.name}, Power Draw: {port.power_draw} W")
+
+    print(f"Total Power Draw: {total_power} W\n")
+```
+
+### Explanation
+
+1. **Device Information**:
+   - **Rack Position**: This will provide the rack and the unit (U) position of the switch.
+   - **Rack Utilization**: The script calculates the total rack units (U) available and how many are used by the devices in the rack.
+
+2. **Power Utilization**:
+   - **Power Ports**: The script iterates through each power port of the Nexus switch and sums up the power draw. Note that the `power_draw` field assumes that this data is available in your NetBox setup (you may need to use custom fields if not natively supported).
+
+### Considerations
+
+- **Custom Fields**: If NetBox doesn't natively track power draw, you can add this as a custom field for your power ports.
+- **Cable Connections**: To ensure that power usage is accurately calculated, ensure that all relevant power ports are connected and properly documented in NetBox.
+- **Accuracy**: The accuracy of this data relies on how well your NetBox instance is maintained.
+
+### Running the Script
+
+1. **Save the Script**: Save the script as a `.py` file.
+2. **Execute the Script**: Run the script using Python to fetch and display the desired information.
+
+### Advanced Use
+
+For advanced use, consider integrating this script into a monitoring system or generating reports periodically to track power usage and rack utilization over time. This can be particularly useful for capacity planning and data center management.
+
+This approach should give you detailed insights into how your Nexus switches are utilizing power and rack space within your environment, assuming NetBox is kept up to date with this data.
