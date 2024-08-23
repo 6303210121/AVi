@@ -1,4 +1,3 @@
-# t.py
 
 import paramiko
 import pynetbox
@@ -44,50 +43,4 @@ try:
 
         elif "Total Power Input (actual draw)" in line:
             value = line.split(":")[-1].strip()
-            value = ''.join(filter(lambda x: x.isdigit() or x == '.', value))
-            print(f"Extracted Power Input: {value}")
-            power_details['input'] = float(value)
-
-        elif "Total Power Capacity" in line:
-            value = line.split(":")[-1].strip()
-            value = ''.join(filter(lambda x: x.isdigit() or x == '.', value))
-            print(f"Extracted Power Capacity: {value}")
-            power_details['capacity'] = float(value)
-
-    # Close the SSH connection
-    ssh_client.close()
-
-    # Calculate power utilization percentage
-    actual_draw = power_details.get('output', 0)
-    total_capacity = power_details.get('capacity', 0)
-
-    if total_capacity > 0:
-        utilization_percentage = (actual_draw / total_capacity) * 100
-    else:
-        utilization_percentage = 0  # Avoid division by zero
-
-    # Print the calculated utilization
-    print(f"Calculated Utilization: {utilization_percentage:.2f}%")
-
-    # Retrieve the power feed in NetBox
-    power_feed = nb.dcim.power_feeds.get(name=power_feed_name)
-
-    if power_feed:
-        # Update the power feed with the new utilization details
-        response = power_feed.update({
-            "allocated_draw": actual_draw,         # Actual power draw in Watts
-            "maximum_draw": total_capacity,        # Maximum capacity in Watts
-            "max_utilization": utilization_percentage,  # Utilization percentage
-        })
-
-        print(f"Updated power feed '{power_feed_name}' in NetBox with utilization: {utilization_percentage:.2f}%")
-        print(f"Update Response: {response}")
-    else:
-        print(f"Power feed '{power_feed_name}' not found in NetBox.")
-
-except Exception as e:
-    print(f"An error occurred: {e}")
-
-finally:
-    # Ensure the SSH client is properly closed
-    ssh_client.close()
+            value = ''.join(filter(lambda x: x.isdigit() or x == '.',
