@@ -1,82 +1,93 @@
-#Netbox_test1.py 
+# t.py
 
-import requests
-import json
+import paramiko
 import pynetbox
-import urllib3
 
-# Suppress InsecureRequestWarning
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# Replace these variables with your switch's details and NetBox API details
-switch_ip = "10.133.35.148"
+# Router connection details
+router_ip = "10.133.35.148"
 username = "admin"
 password = "tcs123"
-netbox_url = "http://10.133.35.137:8000"
-netbox_token = "b10f953429d54bcbe45a24445161f863b202089b"
 
-# NX-API URL - ensure you're using the correct protocol (http or https)
-nx_api_url = f"https://{switch_ip}/ins"
+# NetBox API connection details
+NETBOX_URL = "http://10.133.35.137:8000"
+NETBOX_TOKEN = "b10f953429d54bcbe45a24445161f863b202089b"
+nb = pynetbox.api(NETBOX_URL, token=NETBOX_TOKEN)
 
-# Headers for the NX-API request
-headers = {
-    "content-type": "application/json-rpc"
-}
+# Power feed name in NetBox that you want to update
+power_feed_name = "POWER1"  # Replace with the actual name of the power feed
 
-# Payload to fetch hardware details
-payload = [
-    {
-        "jsonrpc": "2.0",
-        "method": "cli",
-        "params": {
-            "cmd": "show inventory",
-            "version": 1
-        },
-        "id": 1
-    }
-]
+# Initialize SSH client
+ssh_client = paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
 try:
-    # Debugging Step: Check connection to the switch
-    print(f"Attempting to connect to the switch at {nx_api_url}")
-    response = requests.post(nx_api_url, data=json.dumps(payload), headers=headers, auth=(username, password), verify=False)
+    # Connect to the router using SSH
+    ssh_client.connect(router_ip, username=username, password=password)
 
-    # Parse the response
-    if response.status_code == 200:
-        data = response.json()
-        inventory = data['result']['body']['TABLE_inv']['ROW_inv']
-        print(json.dumps(inventory, indent=4))
+    # Execute the command to get power details
+    stdin, stdout, stderr = ssh_client.exec_command("show environment power")
+    output = stdout.read().decode()
 
-        # Connect to NetBox
-        nb = pynetbox.api(netbox_url, token=netbox_token)
+    # Debug print the output to inspect the format
+    print("Command Output:\n", output)
 
-        # Debugging Step: Verify connection to NetBox
-        try:
-            nb.dcim.devices.all()
-            print("Successfully connected to NetBox.")
-        except Exception as e:
-            print(f"Failed to connect to NetBox: {e}")
-            exit(1)
+    # Process the output to extract relevant power details
+    power_details = {}
+    lines = output.splitlines()
 
-        # Update NetBox with the fetched hardware details
-        device_name = "Device"
-        device = nb.dcim.devices.get(name=device_name)
+    for line in lines:
+        if "Total Power Output (actual draw)" in line:
+            value = line.split(":")[-1].strip()
+            value = ''.join(filter(lambda x: x.isdigit() or x == '.', value))  # Extract only the numeric part
+            print(f"Extracted Power Output: {value}")
+            power_details['output'] = float(value)  # Convert to float
 
-        if device:
-            for item in inventory:
-                part_number = item.get('productid', 'N/A')
-                serial_number = item.get('serialnum', 'N/A')
-                description = item.get('desc', 'N/A')
+        elif "Total Power Input (actual draw)" in line:
+            value = line.split(":")[-1].strip()
+            value = ''.join(filter(lambda x: x.isdigit() or x == '.', value))
+            print(f"Extracted Power Input: {value}")
+            power_details['input'] = float(value)
 
-                print(f"Part Number: {part_number}, Serial Number: {serial_number}, Description: {description}")
+        elif "Total Power Capacity" in line:
+            value = line.split(":")[-1].strip()
+            value = ''.join(filter(lambda x: x.isdigit() or x == '.', value))
+            print(f"Extracted Power Capacity: {value}")
+            power_details['capacity'] = float(value)
 
-                # You can update custom fields or other attributes in NetBox as needed
-                # Example: Update a custom field
-                # custom_fields = device.custom_fields
-                # custom_fields['part_number'] = part_number
-                # device.update({'custom_fields': custom_fields})
+    # Close the SSH connection
+    ssh_client.close()
+
+    # Calculate power utilization percentage
+    actual_draw = power_details.get('output', 0)
+    total_capacity = power_details.get('capacity', 0)
+
+    if total_capacity > 0:
+        utilization_percentage = (actual_draw / total_capacity) * 100
     else:
-        print(f"Failed to fetch details: {response.status_code}")
+        utilization_percentage = 0  # Avoid division by zero
 
-except requests.exceptions.RequestException as e:
-    print(f"Error connecting to the switch: {e}")
+    # Print the calculated utilization
+    print(f"Calculated Utilization: {utilization_percentage:.2f}%")
+
+    # Retrieve the power feed in NetBox
+    power_feed = nb.dcim.power_feeds.get(name=power_feed_name)
+
+    if power_feed:
+        # Update the power feed with the new utilization details
+        response = power_feed.update({
+            "allocated_draw": actual_draw,         # Actual power draw in Watts
+            "maximum_draw": total_capacity,        # Maximum capacity in Watts
+            "max_utilization": utilization_percentage,  # Utilization percentage
+        })
+
+        print(f"Updated power feed '{power_feed_name}' in NetBox with utilization: {utilization_percentage:.2f}%")
+        print(f"Update Response: {response}")
+    else:
+        print(f"Power feed '{power_feed_name}' not found in NetBox.")
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+finally:
+    # Ensure the SSH client is properly closed
+    ssh_client.close()
